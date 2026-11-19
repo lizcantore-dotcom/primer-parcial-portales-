@@ -1,17 +1,20 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Models\Genre;
 use Illuminate\Http\Request;
 use App\Models\Product;
+use App\Models\Rating;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\storage;
+use PhpParser\Node\Stmt\TryCatch;
 
 class ProductosController extends Controller
 {
     public function listarProductos()
     {
-        $productos = Product::all();
+        //$productos = Product::all();
+        $productos = Product::with(['rating', 'genres'])->get();
 
         return view('productos.productos', [
             'productos' => $productos
@@ -31,13 +34,15 @@ class ProductosController extends Controller
     //funcion de crear
     public function create()
     {
-        return view('productos.create');
+        return view('productos.create', [
+            'ratings'=> Rating::all(),
+            'genres'=> Genre::orderBy('name')->get(),
+        ]);
     }
 
     //funcion storage
     public function store(Request $request)
     {
-        //dd($request->all(), $request->hasFile('cover'), $request->file('cover'));
         $request->validate([
             'name' => 'required|min:3',
             'price' => 'required|numeric',
@@ -62,7 +67,7 @@ class ProductosController extends Controller
             'cover.mimes' => 'La imagen debe tener formato: jpeg, png, jpg o webp.',
             'cover.max' => 'La imagen no puede superar los 2MB.',
         ]);
-        $data = $request->only(['name', 'price', 'stock', 'release_date', 'description', 'cover_description']);
+        $data = $request->only(['name', 'price', 'stock', 'release_date', 'description', 'cover_description', 'rating_fk']);
 
         if ($request->hasFile('cover')){
             $data['cover']= $request->file('cover')->store('covers', 'public');
@@ -70,6 +75,8 @@ class ProductosController extends Controller
         }
         
         $producto = product::create($data);
+
+        $producto->genres()->attach($request->input('genre_fks', []));
 
         return to_route('productos.index')
         ->with('feedback.message', 'El Producto ' . $producto->name . 'se creó con éxito');
@@ -81,6 +88,8 @@ class ProductosController extends Controller
     {
         return view('productos.edit',[
             'producto' => Product::findOrFail($id),
+            'ratings'=> Rating::all(),
+            'genres'=> Genre::orderBy('name')->get(),
         ]);
     }
     //funcion actualizar
@@ -114,7 +123,7 @@ class ProductosController extends Controller
         $producto = Product::findOrFail($id);
         $oldCover= $producto->cover;
         
-        $data = $request->only(['name', 'price', 'stock', 'release_date', 'description', 'cover_description']);
+        $data = $request->only(['name', 'price', 'stock', 'release_date', 'description', 'cover_description', 'rating_fk']);
 
         if ($request->hasFile('cover')) {
             //$data['cover'] = $request->file('cover')->store('covers', 'public');
@@ -122,6 +131,7 @@ class ProductosController extends Controller
         }
 
         $producto->update($data);
+        $producto->genres()->sync($request->input('genre_fks', []));
 
         if(
             $request->hasFile('cover') &&
@@ -130,9 +140,7 @@ class ProductosController extends Controller
         ){
             storage::delete($oldCover);
         }
-            
-        
-
+  
         return to_route('productos.index')
             ->with('feedback.message', 'El producto fue actualizado con éxito.');
     }
@@ -148,11 +156,21 @@ class ProductosController extends Controller
     public function destroy(int $id)
     {
         $producto = Product::findOrFail($id);
+       Try{
+         DB::transaction(function() use($producto){
+        $producto->genres()->detach();
         $producto->delete();
+        });
+        
         if($producto->cover !== null&& storage::exists($producto->cover)){
             storage::delete($producto->cover);
         }
         return to_route('productos.index')
         ->with('feedback.message', 'El producto fue eliminado con éxito.');
+       }catch(\throwable $th){
+        return to_route('productos.index')
+        ->with('feedback.message','Ocurrio un error el producto no fue eliminado' )
+        ->with('feedback.status', 'danger');
+       }
     }
 }

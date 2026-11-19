@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
 {
     Schema::create('products', function (Blueprint $table) {
-        $table->id(); // Equivalente a movie_id PRIMARY BIGINT UNSIGNED NOT NULL AUTO_INCREMENT
+        $table->id();                      // Equivalente a movie_id PRIMARY BIGINT UNSIGNED NOT NULL AUTO_INCREMENT
         $table->string('name', 100);       // Nombre del producto
         $table->unsignedInteger('price');  // Precio
         $table->integer('stock');          // Stock disponible

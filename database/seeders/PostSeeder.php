@@ -16,7 +16,7 @@ class PostSeeder extends Seeder
     {
         DB::table('posts')->insert([
             [
-                'rating_fk'=>'1',
+                'rating_fk'=>'3',
                 'title' => 'Llegan los nuevos componentes a la tienda',
                 'author' => 'Administrador',
                 'published_at' => '2026-10-01',
@@ -25,7 +25,7 @@ class PostSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'rating_fk'=>'1',
+                'rating_fk'=>'2',
                 'title' => 'Cómo elegir la mejor placa de video para tu PC',
                 'author' => 'Soporte Técnico',
                 'published_at' => '2026-10-02',
@@ -34,7 +34,7 @@ class PostSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'rating_fk'=>'1',
+                'rating_fk'=>'3',
                 'title' => 'Todo lo que debes saber sobre memorias DDR5',
                 'author' => 'Redacción',
                 'published_at' => '2026-10-03',
@@ -52,7 +52,7 @@ class PostSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'rating_fk'=>'1',
+                'rating_fk'=>'2',
                 'title' => 'Diferencias entre discos SSD SATA y NVMe M.2',
                 'author' => 'Soporte Técnico',
                 'published_at' => '2026-10-05',
@@ -61,7 +61,7 @@ class PostSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'rating_fk'=>'1',
+                'rating_fk'=>'3',
                 'title' => 'Guía de fuentes de poder: ¿Cuántos watts necesitas?',
                 'author' => 'Administrador',
                 'published_at' => '2026-10-06',
@@ -70,7 +70,7 @@ class PostSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'rating_fk'=>'1',
+                'rating_fk'=>'2',
                 'title' => 'Los mejores procesadores calidad-precio del año',
                 'author' => 'Redacción',
                 'published_at' => '2026-10-06',
@@ -79,7 +79,7 @@ class PostSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'rating_fk'=>'1',
+                'rating_fk'=>'3',
                 'title' => 'Importancia de una buena refrigeración líquida',
                 'author' => 'Soporte Técnico',
                 'published_at' => '2026-10-06',

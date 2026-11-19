@@ -41,7 +41,7 @@
 
         <main class="container py-3">
             @if (session('feedback.message'))
-                <div class="alert alert-success">{{ session('feedback.message') }}</div>  
+                <div class="alert alert-{{ session('feedback.status') ?? 'success'}}">{{session('feedback.message')}}</div>  
             @endif
 
             {{$slot}}

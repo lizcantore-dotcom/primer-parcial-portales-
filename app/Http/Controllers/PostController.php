@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Genre;
 use Illuminate\Http\Request;
 use App\Models\Post;
+use App\Models\Rating;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\storage;
 
@@ -11,8 +13,8 @@ class PostController extends Controller
 {
     public function index()
     {
-        $posts = Post::all();
-
+        //$posts = Post::all();
+        $posts = Post::with(['rating', 'genres'])->get();
         return view('posts.posts', [
             'posts' => $posts
         ]);
@@ -30,7 +32,11 @@ class PostController extends Controller
     //funcion de crear
     public function create()
     {
-        return view('posts.create');
+        return view('posts.create', [
+            'ratings'=> Rating::all(),
+            'genres'=> Genre::orderBy('name')->get(),
+        ]);
+
     }
 
     //funcion store
@@ -56,7 +62,7 @@ class PostController extends Controller
         'cover.mimes' => 'La imagen debe tener formato: jpeg, png, jpg o webp.',
     ]);
 
-        $data = $request->only(['title', 'author', 'published_at', 'content', 'cover_description']);
+        $data = $request->only(['title', 'author', 'published_at', 'content', 'cover_description', 'rating_fk']);
 
         if ($request->hasFile('cover')){
             $data['cover']= $request->file('cover')->store('covers', 'public');
@@ -64,6 +70,7 @@ class PostController extends Controller
         }
 
         $post = Post::create($data);
+        $post->genres()->attach($request->input('genre_fks', []));
 
         return to_route('blog.index');
     }
@@ -73,6 +80,8 @@ class PostController extends Controller
     {
         return view('posts.edit',[
             'post' => Post::findOrFail($id),
+            'ratings'=> Rating::all(),
+            'genres'=> Genre::orderBy('name')->get(),
         ])
         ->with('feedback.message', 'El Articulo fue actualizado con éxito.');
     }
@@ -101,7 +110,7 @@ class PostController extends Controller
         $post = Post::findOrFail($id);
         $oldCover= $post->cover;
         
-        $data = $request->only(['title', 'author', 'published_at', 'content', 'cover_description']);
+        $data = $request->only(['title', 'author', 'published_at', 'content', 'cover_description', 'rating_fk']);
 
         if ($request->hasFile('cover')) {
            // $data['cover'] = $request->file('cover')->store('covers', 'public');
@@ -109,6 +118,7 @@ class PostController extends Controller
         }
 
         $post->update($data);
+        $post->genres()->sync($request->input('genre_fks', []));
 
         if(
             $request->hasFile('cover') &&
@@ -134,12 +144,22 @@ class PostController extends Controller
     public function destroy(int $id)
     {
         $post = Post::findOrFail($id);
+        try{
+            DB::transaction(function() use($post){
+        $post->genres()->detach();
         $post->delete();
+        });
+
         if($post->cover !== null&& storage::exists($post->cover)){
             storage::delete($post->cover);
         }
 
         return to_route('blog.index')
         ->with('feedback.message', 'La entrada de blog fue eliminada con éxito.');
+        }catch(\throwable $th){
+            return to_route('blog.index')
+            ->with('feedback.message','Ocurrio un error el blog no fue eliminado' )
+            ->with('feedback.status', 'danger');
+        }
     }
 }

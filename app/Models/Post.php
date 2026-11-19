@@ -6,22 +6,28 @@ use Illuminate\Database\Eloquent\Model;
 
 class Post extends Model
 {
-    protected $fillable = ['title', 'author', 'published_at', 'content', 'cover', 'cover_description'];
+    protected $fillable = ['title', 'author', 'published_at', 'content', 'cover', 'cover_description', 'rating_fk'];
     public function price(): Attribute
     {
         return Attribute::make (
-            
-        function ($value){
-            return $value /100;
-        },
-         function ($value){
-            return $value *100;
-        }
+        get: fn ($value)=> $value /100,
+        set: fn ($value) => $value *100,
     );    
-}
-public function rating()
-{
-    return $this-> belongsTo(Rating::class, 'rating_fk', 'rating_id');
-}
+    }
+    public function rating()
+    {
+        return $this-> belongsTo(Rating::class, 'rating_fk', 'rating_id');
+    }
+    public function genres()
+    {
+        return $this->belongsToMany(
+            Genre::class,
+            'posts_have_genres',
+            'post_fk',
+            'genre_fk',
+            'id',
+            'genre_id',
+        );
+    }
 
 }

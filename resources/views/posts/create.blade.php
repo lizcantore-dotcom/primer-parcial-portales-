@@ -126,6 +126,47 @@
                                 <label for="cover_description" class="form-label">Descripción de la Imagen</label>
                                 <input type="text" id="cover_description" name="cover_description" value="{{ old('cover_description') }}" class="form-control" placeholder="Texto alternativo de la imagen">
                             </div>
+                            <div class="mb-3">
+                                <label for="rating_fk" class="form-label">Clasificación.</label>
+                                <select
+                                    id="rating_fk"
+                                    name="rating_fk"
+                                    @class([
+                                        'form-control',
+                                        'is-invalid' => $errors->has('rating_fk'),
+                                    ])
+                                    @error('rating_fk')
+                                        aria-invalid="true"
+                                        aria-errormessage="error-rating_fk"
+                                    @enderror
+                                >
+                                    @foreach($ratings as $rating)
+                                        <option 
+                                            value="{{ $rating->rating_id }}"
+                                            @selected($rating->rating_id==old('rating_fk'))
+                                            >
+                                            {{ $rating->name }} ({{ $rating->abbreviation }})
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('rating_fk')
+                                    <div class="text-danger" id="error-rating_fk">{{ $message }}</div>
+                                @enderror
+                                <fieldset class="mb-2">
+                                    <legend>Genero</legend>
+                                    @foreach ($genres as $genre)
+                                        <label class="me-3">
+                                            <input 
+                                            type= "checkbox"
+                                            name= "genre_fks[]"
+                                            value= "{{ $genre->genre_id}}"
+                                            @checked(in_array($genre->genre_id, old('genre_fks', [])))
+                                            >
+                                            {{ $genre->name}}
+                                        </label>
+                                    @endforeach
+                                </fieldset>
+                            </div>
 
                             <div class="d-flex justify-content-between align-items-center">
                                 <a href="{{ route('blog.index') }}" class="btn btn-outline-secondary">← Cancelar y volver</a>

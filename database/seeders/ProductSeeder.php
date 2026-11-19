@@ -15,7 +15,7 @@ class ProductSeeder extends Seeder
     {
         DB::table('products')->insert([
             [
-                'rating_fk'=>'1',
+                'rating_fk'=>'3',
                 'name' => 'Placa de Video RTX 4060',
                 'price' => 450000.00,
                 'stock' => 10,
@@ -25,7 +25,7 @@ class ProductSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'rating_fk'=>'1',
+                'rating_fk'=>'2',
                 'name' => 'Procesador Intel Core i5 13400F',
                 'price' => 280000.00,
                 'stock' => 15,
@@ -35,7 +35,7 @@ class ProductSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'rating_fk'=>'1',
+                'rating_fk'=>'2',
                 'name' => 'Memoria RAM 16GB DDR5 Kingston Fury',
                 'price' => 95000.00,
                 'stock' => 25,
@@ -45,7 +45,7 @@ class ProductSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'rating_fk'=>'1',
+                'rating_fk'=>'2',
                 'name' => 'Disco Sólido SSD 1TB NVMe M.2 WD',
                 'price' => 110000.00,
                 'stock' => 30,
@@ -55,7 +55,7 @@ class ProductSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'rating_fk'=>'1',
+                'rating_fk'=>'2',
                 'name' => 'Motherboard ASUS Prime B760M-A',
                 'price' => 210000.00,
                 'stock' => 8,
@@ -65,7 +65,7 @@ class ProductSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'rating_fk'=>'1',
+                'rating_fk'=>'3',
                 'name' => 'Fuente de Alimentación 750W 80 Plus Gold',
                 'price' => 160000.00,
                 'stock' => 12,
@@ -75,7 +75,7 @@ class ProductSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'rating_fk'=>'1',
+                'rating_fk'=>'2',
                 'name' => 'Gabinete Gamer Mid Tower Vidrio Templado',
                 'price' => 90000.00,
                 'stock' => 20,
@@ -85,7 +85,7 @@ class ProductSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'rating_fk'=>'1',
+                'rating_fk'=>'3',
                 'name' => 'Monitor 24" IPS 165Hz Full HD',
                 'price' => 290000.00,
                 'stock' => 7,

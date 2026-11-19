@@ -47,10 +47,20 @@
                             </p>
 
                             <p class="text-secondary mb-2">
+                                <strong>Clasificacion:</strong>
                                 {{ $post->rating->abbreviation }}
+                            </p>
+                            <p class="text-secondary mb-2">
+                                <strong>Gama:</strong>
+                                @forelse($post -> genres as $genre)
+                                    <span class="badge bg-secondary">{{ $genre->name }}</span>
+                                @empty
+                                    <i>Sin géneros asignados</i>
+                                @endforelse
                             </p>
 
                             <p class="card-text text-secondary">
+                                <strong>Contenido:</strong>
                                 {{ $post->content }}
                             </p>
 

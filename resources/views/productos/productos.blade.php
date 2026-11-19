@@ -24,7 +24,7 @@
                             @if($producto->cover !== null && \Storage::exists($producto->cover))
                             <img src="<?= \Storage::url($producto->cover); ?>" alt="{{ $producto->cover_description }}" class="img-fluid rounded shadow-sm">
                         @else
-                            <div class="p-5 bg-white rounded border text-muted">
+                            <div class="p-2 bg-white rounded border text-muted">
                                 Sin portada
                             </div>
                         @endif
@@ -36,17 +36,29 @@
                             <h2 class="card-title h5 fw-bold">
                                 {{ $producto->name }}
                             </h2>
+                            <p class="text-secondary mb-2">
+                                <strong>Clasificacion:</strong>
+                                {{ $producto->rating->abbreviation }}
+                            </p>
+                            <p class="text-secondary mb-2">
+                                <strong>Gama:</strong>
+                                @forelse($producto -> genres as $genre)
+                                    <span class="badge bg-secondary">{{ $genre->name }}</span>
+                                @empty
+                                    <i>Sin géneros asignados</i>
+                                @endforelse
+                            </p>
 
                             <p class="card-text text-secondary">
                                 {{ $producto->description }}
                             </p>
 
                             <div class="mt-auto">
-                                <p class="producto-precio mb-3">
+                                <p class="producto-precio mb-2">
                                     $ {{ $producto->price }}
                                 </p>
 
-                                <div class="producto-datos mb-3">
+                                <div class="producto-datos mb-2">
                                     <p class="mb-1">
                                         <strong>Stock:</strong>
                                         {{ $producto->stock }} un.
@@ -56,9 +68,7 @@
                                         <strong>Lanzamiento:</strong>
                                         {{ $producto->release_date }}
                                     </p>
-                                     <p class="text-secondary mb-2">
-                                         {{ $producto->rating->abbreviation }}
-                                    </p>
+                                    
                                 </div>
 
                                 <div class="d-flex flex-wrap gap-2">

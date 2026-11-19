@@ -8,11 +8,11 @@
                 <h1 class="mb-4 text-dark">{{ $post->title }}</h1>
 
                 <!-- Sección de la Imagen de Portada  -->
-                <div class="mb-4 text-center">
+                <div class="mb-3 text-center">
                     @if($post->cover !== null && \Storage::exists($post->cover))
                         <img src="<?= \Storage::url($post->cover); ?>" alt="{{ $post->cover_description }}" class="img-fluid rounded shadow-sm max-height-image">
                     @else
-                        <div class="p-4 bg-white rounded border text-muted">
+                        <div class="p-2 bg-white rounded border text-muted">
                             Sin portada
                         </div>
                     @endif
@@ -21,19 +21,28 @@
                 <dl class="row">
                     <dt class="col-sm-3 fw-bold">Autor:</dt>
                     <dd class="col-sm-9"><span class="badge bg-secondary">{{ $post->author }}</span></dd>
-
                     <dt class="col-sm-3 fw-bold">Fecha de publicación:</dt>
                     <dd class="col-sm-9">{{ $post->published_at }}</dd>
+                    <dt class="col-sm-3 fw-bold">Clasificacion:</dt>
+                    <dd class="col-sm-9">{{ $post->rating->abbreviation }}</dd>
+                    <dt class="col-sm-3 fw-bold">Gama:</dt>
+                    <dd class="col-sm-9">
+                         @forelse($post -> genres as $genre)
+                                    <span class="badge bg-secondary">{{ $genre->name }}</span>
+                                @empty
+                                    <i>Sin géneros asignados</i>
+                                @endforelse
+                    </dd>
                 </dl>
 
                 <hr class="my-4">
 
                 <h3 class="h5 fw-bold">Contenido</h3>
-                <div class="p-3 bg-white rounded border">
+                <div class="p-2 bg-white rounded border">
                     {{ $post->content }}
                 </div>
 
-                <div class="mt-4">
+                <div class="mt-2">
                     <a href="{{ route('blog.index') }}" class="btn btn-outline-secondary">← Volver al blog</a>
                 </div>
             </div>

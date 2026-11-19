@@ -30,6 +30,18 @@
 
                             <dt class="col-sm-4 fw-bold">Fecha de lanzamiento:</dt>
                             <dd class="col-sm-8">{{ $producto->release_date }}</dd>
+
+                            <dt class="col-sm-4 fw-bold">Clasificacion:</dt>
+                            <dd class="col-sm-8">{{ $producto->rating->abbreviation }}</dd>
+
+                            <dt class="col-sm-4 fw-bold">Gama:</dt>
+                            <dd class="col-sm-8">     
+                                @forelse($producto -> genres as $genre)
+                                    <span class="badge bg-secondary">{{ $genre->name }}</span>
+                                @empty
+                                    <i>Sin géneros asignados</i>
+                                @endforelse
+                            </dd>
                         </dl>
                     </div>
                 </div>
