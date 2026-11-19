@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Post;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\storage;
 
 class PostController extends Controller
 {
@@ -30,6 +32,8 @@ class PostController extends Controller
     {
         return view('posts.create');
     }
+
+    //funcion store
     public function store(Request $request)
     {
         $request->validate([
@@ -37,6 +41,8 @@ class PostController extends Controller
         'author' => 'required',
         'published_at' => 'required|date',
         'content' => 'required|min:10',
+        'cover' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+        'cover_description' => 'nullable|string|max:255',
     ], [
         // Mensajes personalizados para el blog
         'title.required' => 'El título del artículo es obligatorio.',
@@ -46,9 +52,16 @@ class PostController extends Controller
         'published_at.date' => 'Ingresa una fecha válida.',
         'content.required' => 'El contenido del artículo no puede estar vacío.',
         'content.min' => 'El contenido es demasiado corto (mínimo 10 caracteres).',
+        'cover.image' => 'El archivo debe ser una imagen válida.',
+        'cover.mimes' => 'La imagen debe tener formato: jpeg, png, jpg o webp.',
     ]);
 
-        $data = $request->only(['title', 'author', 'published_at', 'content']);
+        $data = $request->only(['title', 'author', 'published_at', 'content', 'cover_description']);
+
+        if ($request->hasFile('cover')){
+            $data['cover']= $request->file('cover')->store('covers', 'public');
+            
+        }
 
         $post = Post::create($data);
 
@@ -63,30 +76,50 @@ class PostController extends Controller
         ])
         ->with('feedback.message', 'El Articulo fue actualizado con éxito.');
     }
+    //funcion actualizar
     public function update(Request $request, int $id){
         $request->validate([
-
-        'title' => 'required|min:5',
-        'author' => 'required',
-        'published_at' => 'required|date',
-        'content' => 'required|min:10',
-    ], [
-        // Mensajes personalizados para el blog
-        'title.required' => 'El título del artículo es obligatorio.',
-        'title.min' => 'El título debe tener al menos 5 caracteres.',
-        'author.required' => 'Debes indicar quién es el autor.',
-        'published_at.required' => 'La fecha de publicación es obligatoria.',
-        'published_at.date' => 'Ingresa una fecha válida.',
-        'content.required' => 'El contenido del artículo no puede estar vacío.',
-        'content.min' => 'El contenido es demasiado corto (mínimo 10 caracteres).',
+            'title' => 'required|min:5',
+            'author' => 'required',
+            'published_at' => 'required|date',
+            'content' => 'required|min:10',
+            'cover' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:4048',
+            'cover_description' => 'nullable|string|max:255',
+        ], [
+            // Mensajes personalizados para el blog
+            'title.required' => 'El título del artículo es obligatorio.',
+            'title.min' => 'El título debe tener al menos 5 caracteres.',
+            'author.required' => 'Debes indicar quién es el autor.',
+            'published_at.required' => 'La fecha de publicación es obligatoria.',
+            'published_at.date' => 'Ingresa una fecha válida.',
+            'content.required' => 'El contenido del artículo no puede estar vacío.',
+            'content.min' => 'El contenido es demasiado corto (mínimo 10 caracteres).',
+            'cover.image' => 'El archivo debe ser una imagen válida.',
+            'cover.mimes' => 'La imagen debe tener formato: jpeg, png, jpg o webp.',
         ]);
 
-        $post = Post::findorFail($id);
-        $data = $request->only(['title', 'author', 'published_at', 'content']);
-        $post -> update($data);
+        $post = Post::findOrFail($id);
+        $oldCover= $post->cover;
+        
+        $data = $request->only(['title', 'author', 'published_at', 'content', 'cover_description']);
+
+        if ($request->hasFile('cover')) {
+           // $data['cover'] = $request->file('cover')->store('covers', 'public');
+           $data['cover'] = $request->file('cover')->store('covers');
+        }
+
+        $post->update($data);
+
+        if(
+            $request->hasFile('cover') &&
+            $oldCover !== null &&
+            storage::exist($oldCover)
+        ){
+            storage::delete($oldCover);
+        }
 
         return to_route('blog.index')
-        ->with('feedback.message', 'La entrada de blog fue actualizado con éxito.');
+            ->with('feedback.message', 'La entrada de blog fue actualizada con éxito.');
     }
 
     //funcion eliminacion
@@ -102,6 +135,9 @@ class PostController extends Controller
     {
         $post = Post::findOrFail($id);
         $post->delete();
+        if($post->cover !== null&& storage::exists($post->cover)){
+            storage::delete($post->cover);
+        }
 
         return to_route('blog.index')
         ->with('feedback.message', 'La entrada de blog fue eliminada con éxito.');

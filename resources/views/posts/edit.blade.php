@@ -10,10 +10,9 @@
                     </div>
                     <div class="card-body p-4 bg-light">
                         
-                        <form action="{{ route('blog.update', $post->id) }}" method="POST">
+                        <form action="{{ route('blog.update', $post->id) }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             
-                            <!-- Título del blog-->
                             <div class="mb-3">
                                 <label for="title" class="form-label">Título del Artículo</label>
                                 <input 
@@ -58,7 +57,6 @@
                                     @enderror
                                 </div>
 
-                                <!-- Fecha de publicación -->
                                 <div class="col-md-6 mb-3">
                                     <label for="published_at" class="form-label">Fecha de Publicación</label>
                                     <input 
@@ -80,8 +78,40 @@
                                     @enderror
                                 </div>
                             </div>
+                            <div class="mb-3">
+                                <div class="mb-2">Imagen Actual</div>
+                                @if ($post->cover && \Storage::exists($post->cover))
+                                    <div class="mb-2">
+                                        <img src="{{\Storage::url($post->cover)}}" alt="" class="img-fluid">
+                                    </div>
+                                @else
+                                    Sin Portada
+                                @endif
+                            </div>
 
-                            <!-- Contenido -->
+                            <!-- ... campo imagen ... -->
+                            <div class="mb-3">
+                                <label for="cover" class="form-label">Imagen de Portada (Opcional)</label> 
+                                <input 
+                                type="file" 
+                                id="cover" 
+                                name="cover" 
+                                @class([
+                                    'form-control', 
+                                    'is-invalid' => $errors->has('cover'),
+                                    ])
+                                @error('cover')
+                                    aria-invalid="true"
+                                    aria-errormessage="error-cover"
+                                @enderror
+                                    aria-describedby="help-cover"
+                                >
+                                <div class="text-muted" id="hep-cover">Solo seleccioná una imagen si queres cambiar la Actual</div>
+                                @error('cover')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+
                             <div class="mb-4">
                                 <label for="content" class="form-label">Contenido del Artículo</label>
                                 <textarea 

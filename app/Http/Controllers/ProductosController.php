@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Product;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\storage;
 
 class ProductosController extends Controller
 {
@@ -31,14 +33,19 @@ class ProductosController extends Controller
     {
         return view('productos.create');
     }
+
+    //funcion storage
     public function store(Request $request)
     {
+        //dd($request->all(), $request->hasFile('cover'), $request->file('cover'));
         $request->validate([
             'name' => 'required|min:3',
             'price' => 'required|numeric',
             'stock' => 'required|integer',
             'release_date' => 'required|date',
             'description' => 'required|max:500',
+            'cover' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'cover_description' => 'nullable|string|max:255',
         ], [
             // Mensajes personalizados
             'name.required' => 'El campo nombre del producto no puede estar vacío.',
@@ -51,8 +58,16 @@ class ProductosController extends Controller
             'release_date.date' => 'Ingresa una fecha válida.',
             'description.required' => 'La descripción es obligatoria.',
             'description.max' => 'La descripción no puede superar los 250 caracteres.',
+            'cover.image' => 'El archivo seleccionado debe ser una imagen válida.',
+            'cover.mimes' => 'La imagen debe tener formato: jpeg, png, jpg o webp.',
+            'cover.max' => 'La imagen no puede superar los 2MB.',
         ]);
-        $data = $request->only(['name', 'price', 'stock', 'release_date', 'description']);
+        $data = $request->only(['name', 'price', 'stock', 'release_date', 'description', 'cover_description']);
+
+        if ($request->hasFile('cover')){
+            $data['cover']= $request->file('cover')->store('covers', 'public');
+            
+        }
         
         $producto = product::create($data);
 
@@ -68,14 +83,17 @@ class ProductosController extends Controller
             'producto' => Product::findOrFail($id),
         ]);
     }
-
-    public function update(Request $request, int $id){
+    //funcion actualizar
+    public function update(Request $request, int $id)
+    {
         $request->validate([
             'name' => 'required|min:3',
             'price' => 'required|numeric',
             'stock' => 'required|integer',
             'release_date' => 'required|date',
             'description' => 'required|max:500',
+            'cover' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:4048',
+            'cover_description' => 'nullable|string|max:255',
         ], [
             // Mensajes personalizados
             'name.required' => 'El campo nombre del producto no puede estar vacío.',
@@ -87,15 +105,36 @@ class ProductosController extends Controller
             'release_date.required' => 'La fecha de lanzamiento es obligatoria.',
             'release_date.date' => 'Ingresa una fecha válida.',
             'description.required' => 'La descripción es obligatoria.',
-            'description.max' => 'La descripción no puede superar los 250 caracteres.',
+            'description.max' => 'La descripción no puede superar los 500 caracteres.',
+            'cover.image' => 'El archivo seleccionado debe ser una imagen válida.',
+            'cover.mimes' => 'La imagen debe tener formato: jpeg, png, jpg o webp.',
+            'cover.max' => 'La imagen no puede superar los 4MB.',
         ]);
-         $producto = Product::findorFail($id);
-          $data = $request-> only(['name', 'price', 'stock', 'release_date', 'description']);
 
-          $producto -> update($data);
+        $producto = Product::findOrFail($id);
+        $oldCover= $producto->cover;
+        
+        $data = $request->only(['name', 'price', 'stock', 'release_date', 'description', 'cover_description']);
 
-          return to_route('productos.index')
-          ->with('feedback.message', 'El producto fue actualizado con éxito.');
+        if ($request->hasFile('cover')) {
+            //$data['cover'] = $request->file('cover')->store('covers', 'public');
+            $data['cover'] = $request->file('cover')->store('covers');
+        }
+
+        $producto->update($data);
+
+        if(
+            $request->hasFile('cover') &&
+            $oldCover !== null &&
+            storage::exist($oldCover)
+        ){
+            storage::delete($oldCover);
+        }
+            
+        
+
+        return to_route('productos.index')
+            ->with('feedback.message', 'El producto fue actualizado con éxito.');
     }
 
     //funcion de eliminar
@@ -110,7 +149,9 @@ class ProductosController extends Controller
     {
         $producto = Product::findOrFail($id);
         $producto->delete();
-
+        if($producto->cover !== null&& storage::exists($producto->cover)){
+            storage::delete($producto->cover);
+        }
         return to_route('productos.index')
         ->with('feedback.message', 'El producto fue eliminado con éxito.');
     }

@@ -10,10 +10,9 @@
                     </div>
                     <div class="card-body p-4 bg-light">
                         
-                        <form action="{{ route('productos.update', $producto->id) }}" method="POST">
+                        <form action="{{ route('productos.update', $producto->id) }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             
-                            <!-- Nombre del producto-->
                             <div class="mb-3">
                                 <label for="name" class="form-label">Nombre del Producto</label>
                                 <input 
@@ -36,8 +35,8 @@
                             </div>
 
                             <div class="row">
-                                <!-- Precio -->
-                                <div class="col-md-6 mb-3">
+
+                            <div class="col-md-6 mb-3">
                                     <label for="price" class="form-label">Precio ($)</label>
                                     <div class="input-group">
                                         <span class="input-group-text">$</span>
@@ -62,7 +61,6 @@
                                     @enderror
                                 </div>
 
-                                <!-- Stock -->
                                 <div class="col-md-6 mb-3">
                                     <label for="stock" class="form-label">Stock Inicial</label>
                                     <input 
@@ -85,7 +83,6 @@
                                 </div>
                             </div>
 
-                            <!-- Fecha de lanzamiento -->
                             <div class="mb-3">
                                 <label for="release_date" class="form-label">Fecha de Lanzamiento</label>
                                 <input 
@@ -106,8 +103,55 @@
                                     <div class="text-danger" id="error-release_date">{{ $message }}</div>
                                 @enderror
                             </div>
+                            <div class="mb-3">
+                                <div class="mb-2">Imagen Actual</div>
+                                @if ($producto->cover && \Storage::exists($producto->cover))
+                                    <div class="mb-2">
+                                        <img src="{{\Storage::url($producto->cover)}}" alt="" class="img-fluid">
+                                    </div>
+                                @else
+                                    Sin Portada
+                                @endif
+                            </div>
 
-                            <!-- Descripción -->
+                            {{-- Campo de Imagen de Portada --}}
+                            <div class="mb-3">
+                                <label for="cover" class="form-label">Imagen de Portada (Opcional)</label>
+                                <input 
+                                type="file" 
+                                id="cover" 
+                                name="cover" 
+                                @class([
+                                    'form-control', 
+                                    'is-invalid' => $errors->has('cover'),
+                                    ])
+                                    @error('cover')
+                                    aria-invalid="true"
+                                    aria-errormessage="error-cover"
+                                    @enderror
+                                    aria-describedby="help-cover"
+                                >
+                                <div class="text-muted" id="hep-cover">Solo seleccioná una imagen si queres cambiar la Actual</div>
+                                @error('cover')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            {{-- Campo de Descripción de la Portada --}}
+                            <div class="mb-3">
+                                <label for="cover_description" class="form-label">Descripción de la Imagen (Texto alternativo)</label>
+                                <input 
+                                    type="text" 
+                                    id="cover_description" 
+                                    name="cover_description"
+                                    value="{{ old('cover_description', $producto->cover_description) }}"
+                                    class="form-control @error('cover_description') is-invalid @enderror"
+                                >
+                                @error('cover_description')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+
                             <div class="mb-4">
                                 <label for="description" class="form-label">Descripción del Producto</label>
                                 <textarea 

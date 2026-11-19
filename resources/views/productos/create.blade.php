@@ -10,8 +10,8 @@
                     </div>
                     <div class="card-body p-4 bg-light">
                         
-                        <form action="{{ route('productos.store') }}" method="POST">
-
+                        <form action="{{ route('productos.store') }}" method="POST" enctype="multipart/form-data">
+                            @csrf
                             <div class="mb-3">
                                 <label for="name" class="form-label">Nombre del Producto</label>
                                 <input 
@@ -45,6 +45,7 @@
                                             step="0.01" 
                                             id="price" 
                                             name="price" 
+                                            value="{{ old('price') }}"
                                             placeholder="0.00"
                                             @class([
                                                 'form-control',
@@ -67,6 +68,7 @@
                                         type="number" 
                                         id="stock" 
                                         name="stock" 
+                                        value="{{ old('stock') }}"
                                         placeholder="Ej: 15"
                                         @class([
                                             'form-control',
@@ -89,6 +91,7 @@
                                     type="date" 
                                     id="release_date" 
                                     name="release_date"
+                                    value="{{ old('release_date') }}"
                                     @class([
                                         'form-control',
                                         'is-invalid' => $errors->has('release_date'),
@@ -100,6 +103,50 @@
                                 >
                                 @error('release_date')
                                     <div class="text-danger" id="error-release_date">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <!-- Campo de imagen -->
+                            <div class="mb-3">
+                                <label for="cover" class="form-label">Imagen de Portada (Opcional)</label>
+                                <input 
+                                    type="file" 
+                                    id="cover" 
+                                    name="cover"
+                                    @class([
+                                        'form-control',
+                                        'is-invalid' => $errors->has('cover'),
+                                    ])
+                                    @error('cover')
+                                        aria-invalid="true"
+                                        aria-errormessage="error-cover"
+                                    @enderror
+                                >
+                                <div class="text-muted" id="hep-cover">Solo seleccioná una imagen si queres cambiar la Actual</div>
+                                @error('cover')
+                                    <div class="text-danger" id="error-cover">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <!-- Campo de Descripción de la Portada -->
+                            <div class="mb-3">
+                                <label for="cover_description" class="form-label">Descripción de la Imagen (Texto alternativo)</label>
+                                <input 
+                                    type="text" 
+                                    id="cover_description" 
+                                    name="cover_description"
+                                    value="{{ old('cover_description') }}"
+                                    placeholder="Ej: Vista frontal de la placa de video"
+                                    @class([
+                                        'form-control',
+                                        'is-invalid' => $errors->has('cover_description'),
+                                    ])
+                                    @error('cover_description')
+                                        aria-invalid="true"
+                                        aria-errormessage="error-cover_description"
+                                    @enderror
+                                >
+                                @error('cover_description')
+                                    <div class="text-danger" id="error-cover_description">{{ $message }}</div>
                                 @enderror
                             </div>
 
@@ -118,7 +165,7 @@
                                         aria-invalid="true"
                                         aria-errormessage="error-description"
                                     @enderror
-                                ></textarea>
+                                >{{ old('description') }}</textarea>
                                 @error('description')
                                     <div class="text-danger" id="error-description">{{ $message }}</div>
                                 @enderror

@@ -4,7 +4,19 @@
     <div class="container my-4">
         <div class="card shadow-sm border-0 bg-light">
             <div class="card-body p-4">
-                <h1 class="mb-3 text-dark">{{ $post->title }}</h1>
+                
+                <h1 class="mb-4 text-dark">{{ $post->title }}</h1>
+
+                <!-- Sección de la Imagen de Portada  -->
+                <div class="mb-4 text-center">
+                    @if($post->cover !== null && \Storage::exists($post->cover))
+                        <img src="<?= \Storage::url($post->cover); ?>" alt="{{ $post->cover_description }}" class="img-fluid rounded shadow-sm max-height-image">
+                    @else
+                        <div class="p-4 bg-white rounded border text-muted">
+                            Sin portada
+                        </div>
+                    @endif
+                </div>
                 
                 <dl class="row">
                     <dt class="col-sm-3 fw-bold">Autor:</dt>

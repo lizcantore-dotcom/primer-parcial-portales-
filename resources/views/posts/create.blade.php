@@ -10,15 +10,15 @@
                     </div>
                     <div class="card-body p-4 bg-light">
                         
-                        <form action="{{ route('blog.store') }}" method="POST">
-                            
+                        <form action="{{ route('blog.store') }}" method="POST" enctype="multipart/form-data">
+                            @csrf
                             <div class="mb-3">
                                 <label for="title" class="form-label">Título del Artículo</label>
                                 <input 
                                     type="text" 
                                     id="title" 
                                     name="title"
-                                    value="{{ old('name') }}" 
+                                   value="{{ old('title') }}"
                                     placeholder="Ej: Las novedades de la Inteligencia Artificial"
                                     @class([
                                         'form-control',
@@ -42,6 +42,7 @@
                                         type="text" 
                                         id="author" 
                                         name="author" 
+                                        value="{{ old('author') }}"
                                         placeholder="Tu nombre"
                                         @class([
                                             'form-control',
@@ -63,6 +64,7 @@
                                         type="date" 
                                         id="published_at" 
                                         name="published_at"
+                                        value="{{ old('published_at') }}"
                                         @class([
                                             'form-control',
                                             'is-invalid' => $errors->has('published_at'),
@@ -93,10 +95,36 @@
                                         aria-invalid="true"
                                         aria-errormessage="error-content"
                                     @enderror
-                                ></textarea>
+                                >{{ old('content') }}</textarea>
                                 @error('content')
                                     <div class="text-danger" id="error-content">{{ $message }}</div>
                                 @enderror
+                            </div>
+
+                            <!-- ... campo imagen ... -->
+                            <div class="mb-3">
+                                <label for="cover" class="form-label">Imagen de Portada (Opcional)</label>
+                                <input type="file" 
+                                id="cover" n
+                                ame="cover" 
+                                @class([
+                                        'form-control',
+                                        'is-invalid' => $errors->has('cover'),
+                                    ])
+                                    @error('cover')
+                                        aria-invalid="true"
+                                        aria-errormessage="error-cover"
+                                    @enderror
+                                >
+                                <div class="text-muted" id="hep-cover">Solo seleccioná una imagen si queres cambiar la Actual</div>
+                                @error('cover')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="cover_description" class="form-label">Descripción de la Imagen</label>
+                                <input type="text" id="cover_description" name="cover_description" value="{{ old('cover_description') }}" class="form-control" placeholder="Texto alternativo de la imagen">
                             </div>
 
                             <div class="d-flex justify-content-between align-items-center">
