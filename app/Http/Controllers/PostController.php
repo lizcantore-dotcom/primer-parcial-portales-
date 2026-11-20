@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Post;
 use App\Models\Rating;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\storage;
+use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
@@ -114,7 +114,7 @@ class PostController extends Controller
 
         if ($request->hasFile('cover')) {
            // $data['cover'] = $request->file('cover')->store('covers', 'public');
-           $data['cover'] = $request->file('cover')->store('covers');
+            $data['cover'] = $request->file('cover')->store('covers', 'public');
         }
 
         $post->update($data);
@@ -123,9 +123,9 @@ class PostController extends Controller
         if(
             $request->hasFile('cover') &&
             $oldCover !== null &&
-            storage::exist($oldCover)
+            Storage::disk('public')->exists($oldCover)
         ){
-            storage::delete($oldCover);
+            Storage::disk('public')->delete($oldCover);
         }
 
         return to_route('blog.index')
@@ -150,13 +150,13 @@ class PostController extends Controller
         $post->delete();
         });
 
-        if($post->cover !== null&& storage::exists($post->cover)){
-            storage::delete($post->cover);
+        if ($post->cover !== null && Storage::disk('public')->exists($post->cover)) {
+            Storage::disk('public')->delete($post->cover);
         }
 
         return to_route('blog.index')
         ->with('feedback.message', 'La entrada de blog fue eliminada con éxito.');
-        }catch(\throwable $th){
+        }catch(\Throwable $th){
             return to_route('blog.index')
             ->with('feedback.message','Ocurrio un error el blog no fue eliminado' )
             ->with('feedback.status', 'danger');

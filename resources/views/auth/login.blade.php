@@ -16,7 +16,7 @@
                             <div class="mb-3">
                                 <label for="email" class="form-label fw-bold">Correo Electrónico</label>
                                 <input 
-                                    type="email" 
+                                    type="text" 
                                     id="email" 
                                     name="email" 
                                     value="{{ old('email') }}"

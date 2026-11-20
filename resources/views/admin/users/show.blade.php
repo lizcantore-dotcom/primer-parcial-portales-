@@ -34,6 +34,23 @@
                             <dt class="col-sm-4 fw-bold">Fecha de Registro:</dt>
                             <dd class="col-sm-8">{{ $user->created_at ? $user->created_at->format('d/m/Y H:i') : '-' }}</dd>
                         </dl>
+
+                                                <hr>
+
+                        <h3 class="h5 fw-bold mb-3">Servicios contratados</h3>
+
+                        @if($user->products->isNotEmpty())
+                            <ul class="list-group">
+                                @foreach($user->products as $product)
+                                    <li class="list-group-item">
+                                        {{ $product->name }}
+                                    </li>
+                                @endforeach
+                            </ul>
+                        @else
+                            <p>Este usuario no tiene servicios contratados.</p>
+                        @endif
+                        
                     </div>
                     <div class="card-footer bg-light p-3 text-end">
                         <a href="{{ route('admin.users.index') }}" class="btn btn-secondary">Regresar</a>

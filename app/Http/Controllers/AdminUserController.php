@@ -16,7 +16,7 @@ class AdminUserController extends Controller
     // Detalle de un usuario específico
     public function show($id)
     {
-        $user = User::findOrFail($id);
+        $user = User::with('products')->findOrFail($id);
         return view('admin.users.show', compact('user'));
     }
 }

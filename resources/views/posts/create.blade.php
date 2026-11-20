@@ -105,8 +105,8 @@
                             <div class="mb-3">
                                 <label for="cover" class="form-label">Imagen de Portada (Opcional)</label>
                                 <input type="file" 
-                                id="cover" n
-                                ame="cover" 
+                                id="cover" 
+                                name="cover" 
                                 @class([
                                         'form-control',
                                         'is-invalid' => $errors->has('cover'),

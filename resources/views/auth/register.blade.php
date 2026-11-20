@@ -31,7 +31,7 @@
         <div>
             <label for="email">Email</label>
             <input
-                type="email"
+                type="text"
                 id="email"
                 name="email"
                 value="{{ old('email') }}"

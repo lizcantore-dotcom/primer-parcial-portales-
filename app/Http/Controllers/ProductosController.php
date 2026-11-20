@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Rating;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\storage;
+use Illuminate\Support\Facades\Storage;
 use PhpParser\Node\Stmt\TryCatch;
 
 class ProductosController extends Controller
@@ -25,7 +25,7 @@ class ProductosController extends Controller
     //funcion de ver detalle
     public function show(int $id)
     {
-        $producto = Product::findorFail($id);
+        $producto = Product::findOrFail($id);
         return view('productos.show', [
         'producto' => $producto,
         ]);
@@ -127,19 +127,20 @@ class ProductosController extends Controller
 
         if ($request->hasFile('cover')) {
             //$data['cover'] = $request->file('cover')->store('covers', 'public');
-            $data['cover'] = $request->file('cover')->store('covers');
+        $data['cover'] = $request->file('cover')->store('covers', 'public');
         }
 
         $producto->update($data);
         $producto->genres()->sync($request->input('genre_fks', []));
 
         if(
-            $request->hasFile('cover') &&
-            $oldCover !== null &&
-            storage::exist($oldCover)
-        ){
-            storage::delete($oldCover);
-        }
+    $request->hasFile('cover') &&
+    $oldCover !== null &&
+    Storage::disk('public')->exists($oldCover)
+    ){
+    Storage::disk('public')->delete($oldCover);
+    }
+
   
         return to_route('productos.index')
             ->with('feedback.message', 'El producto fue actualizado con éxito.');
@@ -162,13 +163,14 @@ class ProductosController extends Controller
         $producto->delete();
         });
         
-        if($producto->cover !== null&& storage::exists($producto->cover)){
-            storage::delete($producto->cover);
+        if ($producto->cover !== null && Storage::disk('public')->exists($producto->cover)) {
+            Storage::disk('public')->delete($producto->cover);
         }
+
         return to_route('productos.index')
         ->with('feedback.message', 'El producto fue eliminado con éxito.');
-       }catch(\throwable $th){
-        return to_route('productos.index')
+        }catch(\Throwable $th){
+            return to_route('productos.index')
         ->with('feedback.message','Ocurrio un error el producto no fue eliminado' )
         ->with('feedback.status', 'danger');
        }
