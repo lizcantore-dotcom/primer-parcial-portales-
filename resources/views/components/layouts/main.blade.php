@@ -24,6 +24,13 @@
                         <a class="nav-link" href="<?= route('productos.index') ?>">Productos</a>
                         <a class="nav-link" href="<?= route('contacto') ?>">Contacto</a>
                         @auth
+                            @if(auth()->user()->role === 'admin')
+                                <a href="{{ route('admin.users.index') }}" class="btn btn-outline-primary ms-2">
+                                    Ver Usuarios
+                                </a>
+                            @endif
+                        @endauth
+                        @auth
                             <li class="nav-item">
                                 <form action="{{ route('auth.logout') }}" method="post">
                                     <button type="submit" class="nav-link">{{ auth()->user()->email }} (Cerrar sesión)</button>

@@ -94,4 +94,12 @@ Route::middleware('admin')->group(function () {
         ->whereNumber('id')
         ->name('blog.destroy');
 
+    // Gestion de usuarios 
+    Route::get('/admin/usuarios', [\App\Http\Controllers\AdminUserController::class, 'index'])
+        ->name('admin.users.index');
+
+    Route::get('/admin/usuarios/{id}', [\App\Http\Controllers\AdminUserController::class, 'show'])
+        ->whereNumber('id')
+        ->name('admin.users.show');
+
 });
