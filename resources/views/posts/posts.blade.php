@@ -6,11 +6,14 @@
         <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
             <h1>Blog de Tecnología e IT</h1>
 
-            @auth
+           @auth
+                @if(auth()->user()->role === 'admin')
                 <a href="{{ route('blog.create') }}" class="btn btn-success">
-                    + Publicar nueva entrada
+                      + Publicar nueva entrada
                 </a>
+                @endif
             @endauth
+
         </div>
 
         <div class="row g-4">
@@ -72,17 +75,19 @@
                                         Ver
                                     </a>
 
-                                    @auth
-                                        <a href="{{ route('blog.edit', ['id' => $post->id]) }}"
-                                           class="btn btn-warning">
-                                            Editar
-                                        </a>
+                 @auth
+                    @if(auth()->user()->role === 'admin')
+                        <a href="{{ route('blog.edit', ['id' => $post->id]) }}"
+                            class="btn btn-warning">
+                            Editar
+                        </a>
 
-                                        <a href="{{ route('blog.delete', ['id' => $post->id]) }}"
-                                           class="btn btn-outline-danger">
-                                            Eliminar
-                                        </a>
-                                    @endauth
+                        <a href="{{ route('blog.delete', ['id' => $post->id]) }}"
+                            class="btn btn-outline-danger">
+                            Eliminar
+                        </a>
+                     @endif
+                @endauth
 
                                 </div>
                             </div>

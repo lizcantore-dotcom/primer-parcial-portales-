@@ -27,6 +27,7 @@ class DatabaseSeeder extends Seeder
             GenreSeeder::class,
             ProductSeeder::class,
             ProductHasGenreSeeder::class,
+            ProductHasUserSeeder::class,
             PostSeeder::class,
             PostHasGenreSeeder::class,
     ]);

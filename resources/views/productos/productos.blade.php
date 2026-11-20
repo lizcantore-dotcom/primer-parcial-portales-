@@ -8,10 +8,13 @@
             <h1>Listado de Productos Informáticos</h1>
 
             @auth
-                <a href="{{ route('productos.create') }}" class="btn btn-success">
-                    + Publicar nuevo producto
-                </a>
+                 @if(auth()->user()->role === 'admin')
+                    <a href="{{ route('productos.create') }}" class="btn btn-success">
+                        + Publicar nuevo producto
+                    </a>
+                @endif
             @endauth
+            
         </div>
 
         <div class="row g-4">
@@ -77,17 +80,19 @@
                                         Ver
                                     </a>
 
-                                    @auth
-                                        <a href="{{ route('productos.edit', ['id' => $producto->id]) }}"
-                                           class="btn btn-warning">
-                                            Editar
-                                        </a>
+                    @auth
+                        @if(auth()->user()->role === 'admin')
+                            <a href="{{ route('productos.edit', ['id' => $producto->id]) }}"
+                               class="btn btn-warning">
+                                Editar
+                            </a>
 
-                                        <a href="{{ route('productos.delete', ['id' => $producto->id]) }}"
-                                           class="btn btn-outline-danger">
-                                            Eliminar
-                                        </a>
-                                    @endauth
+                            <a href="{{ route('productos.delete', ['id' => $producto->id]) }}"
+                               class="btn btn-outline-danger">
+                                Eliminar
+                            </a>
+                        @endif
+                    @endauth
                                 </div>
                             </div>
 

@@ -32,6 +32,18 @@ class Product extends Model
         );
     }
 
+    public function users()
+    {
+    return $this->belongsToMany(
+        User::class,
+        'products_have_users',
+        'product_fk',
+        'user_fk',
+        'id',
+        'id'
+    );
+    }
+
 }
 
 
