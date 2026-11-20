@@ -9,8 +9,9 @@
 
                 <!-- Sección de la Imagen de Portada  -->
                 <div class="mb-3 text-center">
-                    @if($post->cover !== null && \Storage::exists($post->cover))
-                        <img src="<?= \Storage::url($post->cover); ?>" alt="{{ $post->cover_description }}" class="img-fluid rounded shadow-sm max-height-image">
+                    <!-- <p>Ruta guardada: {{ $post->cover }}</p> -->
+                   @if($post->cover !== null && \Storage::disk('public')->exists($post->cover))
+                    <img src="{{ \Storage::disk('public')->url($post->cover) }}" alt="{{ $post->cover_description }}" class="img-fluid rounded shadow-sm max-height-image">
                     @else
                         <div class="p-2 bg-white rounded border text-muted">
                             Sin portada

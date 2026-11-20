@@ -22,8 +22,8 @@
                     <div class="card h-100 blog-card">
 
                         <div class="card-body d-flex flex-column">
-                            @if($post->cover !== null && \Storage::exists($post->cover))
-                                <img src="<?= \Storage::url($post->cover); ?>" alt="{{ $post->cover_description }}" class="img-fluid rounded shadow-sm max-height-image">
+                            @if($post->cover !== null && \Storage::disk('public')->exists($post->cover))
+                                <img src="{{ \Storage::disk('public')->url($post->cover) }}" alt="{{ $post->cover_description }}" class="img-fluid rounded shadow-sm max-height-image">
                             @else
                                 <div class="p-4 bg-white rounded border text-muted">
                                     Sin portada
